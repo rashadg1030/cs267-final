@@ -1,0 +1,85 @@
+% Project final report length limit: 10 pages, single-column standard latex.
+% Due date May 13. This is a strict deadline as we need to finish grading by the final grades
+% due date. Final project and poster presentation account for 40% of the the grade.
+% Pre-proposal accounted for 1% of grade.
+\documentclass[a4paper, 12pt]{article}
+
+% \usepackage{caption}
+% \usepackage{float}
+% \usepackage{hyperref}
+
+% We can define some other document properties too!
+\author{Rashad Gover}
+\date{\today}
+\title{Exploring Parallel Programming in Haskell}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+\tableofcontents
+
+\newpage
+
+\begin{abstract}
+  In this report, we will explore parallel computation in the pure functional language \textbf{\textit{Haskell}}.
+\end{abstract}
+
+\section{Introduction to Haskell}
+This is the introduction to Haskell, its' properties, and syntax.
+
+\subsection{Syntax}
+This section goes over the syntax of Haskell
+
+\subsection{Fibonacci Sequence}
+This section will go over the code in Haskell for the Fibonacci Sequence
+
+\subsection{Matrix Multiplication}
+This section will go over the code in Haskell for Matrix Multiplication
+
+\subsection{Benchmarking}
+This section goes over Threadscope and benchmarks the two examples above. Fibonacci and Matrix Mutiplication.
+
+\section{Parallel Evaluation Strategies}
+This section will breifly explain Strategies and the Eval monad, and the functions rpar and rseq.
+
+\subsection{Results}
+This section will have the results for the Fibonacci Sequence and Matrix Multiplication using Strategies.
+
+\section{Dataflow Parallelism with monad-par}
+This section will introduce the Par Monad and the concept of dataflow parallelism.
+
+\subsection{Results}
+This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
+
+\section{Accelerate Library}
+This section goes over the Accerlerate library and the idea of embedded DSLs withing Haskell, for which it
+ is known for. In this section, HW2 particle simulation is used
+
+\subsection{Particle Simulation}
+This section describes the Particle Simulation algorithm in some detail and HW2.
+
+\subsection{Multicore Programming with Accelerate}
+This section goes over multicore programming in Accelerate.
+
+\subsubsection{Results \& Comparison with OpenMP}
+In this section we compare the results with the OpenMP variant of the HW.
+
+\subsection{GPU Programming with Accelerate}
+This section goes over GPU programming in Accelerate. This will be pretty much the same
+as the multicore programming in the above section because we can write programs for both platforms
+with a single syntax! The syntax used to describe the parallel program is decoupled from the platform it runs on which is great.
+
+
+\subsubsection{Results \& Comparison with CUDA}
+This section will go over the benchmark results and compare it with the CUDA implementation of HW2.
+
+\section{Conclusion}
+This section will rap up the results of the benchmarks and come to conclusion. Was climbing up the
+ abstraction ladder worth the tradeoff in performance? Was the drop in performance of the Haskell implementations
+ worth the better ergonomics? This could be argued, especially if the user isn't familiar with functional programming.
+ Was the performance of the Haskell programs not that much of a difference from the C++ implementations? What do overhead costs look like?
+ How does scaling compare between the two platforms? Weak and strong scaling.
+
+\end{document}
