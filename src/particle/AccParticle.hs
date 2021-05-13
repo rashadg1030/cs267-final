@@ -6,6 +6,7 @@ import Data.Array.Accelerate.Linear.V2
 import Data.Array.Accelerate.Linear.Metric
 import Data.Array.Accelerate.Linear.Vector
 
+-- Types
 
 type Time = Float
 
@@ -27,6 +28,11 @@ data World = World
   , worldTime :: {-# UNPACK #-} !Time
   }
 
+-- Constants
+defMass = 0.1
+defCutoff = 0.1
+defMinR = (defCutoff / 100.0)
+
 advanceParticles
   :: (Acc (Vector PosMass) -> Acc (Vector Accel))
   -> Acc (Scalar Time)
@@ -40,10 +46,10 @@ advanceParticles calcAccels timeStep ps =
     A.zipWith advance ps accels
 
 advanceWorld
-    :: (Scalar Time -> Vector Particle -> Vector Particle)
-    -> Time
-    -> World
-    -> World
+  :: (Scalar Time -> Vector Particle -> Vector Particle)
+  -> Time
+  -> World
+  -> World
 advanceWorld advance timeStep world =
   let
     particles' = advance (fromList Z [timeStep]) (worldParticles world)
@@ -55,6 +61,24 @@ advanceWorld advance timeStep world =
           , worldSteps = steps'
           , worldTime = time'
           }
+
+-- Helper functions
+
+calcAccel
+  :: Exp PosMass -- The affected particle
+  -> Exp PosMass -- The particle causing the effect
+  -> Exp Accel
+calcAccel pmi pmj = s *^ r
+  where
+    eps = 0.1
+    mj          = posMassMass pmj
+
+    r           = posMassPos pmj - posMassPos pmi
+    rsqr        = dot r r + eps * eps
+    invr        = 1 / sqrt rsqr
+    invr3       = invr * invr * invr
+
+    s           = mj * invr3
 
 putParticle :: Exp Pos -> Exp Particle
 putParticle pos = body
