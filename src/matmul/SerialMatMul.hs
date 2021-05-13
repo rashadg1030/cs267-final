@@ -33,7 +33,7 @@ transpose v = Vector.fromList [ Vector.fromList [ v ! col ! row | col <- [0 .. m
     maxCol = Vector.length (v ! 0) - 1
 
 isConsistentMatrix :: Eq a => Vector (Vector a) -> Bool
-isConsistentMatrix m = allSame $ Vector.map Vector.length m
+isConsistentMatrix m = allEq $ Vector.map Vector.length m
   where
-    allSame :: Eq a => Vector a -> Bool
-    allSame v = Vector.and $ Vector.map (== Vector.head v) (Vector.tail v)
+    allEq :: Eq a => Vector a -> Bool
+    allEq v = Vector.and $ Vector.map (== Vector.head v) (Vector.tail v)
