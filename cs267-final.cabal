@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 5469248d6373a509513bafa8528d256cda62169af47aeb0241b16873c1a6243f
+-- hash: dec081a940223f906edd674d31b3c70c5afc0ced5deb443ff387af4b8da88ac4
 
 name:           cs267-final
 version:        0.1.0.0
@@ -27,16 +27,15 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
-      Parallel
-      Parser
-      Serial
+      SerialFib
+      SerialMatMul
   other-modules:
       Paths_cs267_final
   hs-source-dirs:
       src
   build-depends:
       base >=4.7 && <5
+    , vector
   default-language: Haskell2010
 
 executable cs267-final-exe
@@ -49,6 +48,7 @@ executable cs267-final-exe
   build-depends:
       base >=4.7 && <5
     , cs267-final
+    , vector
   default-language: Haskell2010
 
 test-suite cs267-final-test
@@ -62,4 +62,5 @@ test-suite cs267-final-test
   build-depends:
       base >=4.7 && <5
     , cs267-final
+    , vector
   default-language: Haskell2010

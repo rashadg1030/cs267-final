@@ -1,13 +1,3 @@
-module Lib
-    ( serialMain
-    , parallelMain
-    ) where
+module Lib where
 
-import qualified Serial (main)
-import qualified Parallel (main)
-
-serialMain :: IO ()
-serialMain = Serial.main
-
-parallelMain :: IO ()
-parallelMain = Parallel.main
+x = undefined
