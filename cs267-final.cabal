@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 67ebbf5f10004bb07400c70dd50499ff24bb327d4e8bc3eac267fea5ff031a08
+-- hash: 9e949776680481d22ade5cc7137a6bd066ea9537270d207be97a3afc3cb0bd6a
 
 name:           cs267-final
 version:        0.1.0.0
@@ -28,13 +28,25 @@ source-repository head
 library
   exposed-modules:
       Lib
+      SerialFib
+      MonadParFib
+      SerialMatMul
+      RepaMatMul
+      AccParticle
+      SerialTree
+      MonadParTree
   other-modules:
       Paths_cs267_final
   hs-source-dirs:
       src
+      src/fib
+      src/matmul
+      src/particle
+      src/tree
   build-depends:
       base >=4.7 && <5
     , monad-par
+    , repa
     , vector
   default-language: Haskell2010
 
@@ -49,6 +61,7 @@ executable cs267-final-exe
       base >=4.7 && <5
     , cs267-final
     , monad-par
+    , repa
     , vector
   default-language: Haskell2010
 
@@ -64,5 +77,6 @@ test-suite cs267-final-test
       base >=4.7 && <5
     , cs267-final
     , monad-par
+    , repa
     , vector
   default-language: Haskell2010

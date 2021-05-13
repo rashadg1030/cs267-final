@@ -1,6 +1,7 @@
 module MonadParTree where
 
-import Tree.SerialTree (Tree(..))
+import SerialTree (Tree(..))
+import Control.Monad.Par
 
 -- Test whether all elements match the given predicate (in parallel)
 checkAllPar :: (a -> Bool) -> Tree a -> Par Bool
