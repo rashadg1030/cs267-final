@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - vector
 - monad-par
+- repa
 
 library:
   source-dirs: src
