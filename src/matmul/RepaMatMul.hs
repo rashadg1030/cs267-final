@@ -12,7 +12,7 @@ matMul
 matMul a b = Repa.sumP (Repa.zipWith (*) aRepl bRepl)
     where
       bTranspose = Repa.transpose b
-      aRepl = Repa.extend (Z :.All :.colsB :.All) a
-      bRepl = Repa.extend (Z :.rowsA :.All :.All) bTranspose
-      (Z :.colsA :.rowsA) = Repa.extent a
-      (Z :.colsB :.rowsB) = Repa.extent b
+      (Z :. aCols :. aRows) = Repa.extent a
+      (Z :. bCols :. bRows) = Repa.extent b
+      aExtension = Repa.extend (Z :. All :. bCols :. All) a
+      bExtension = Repa.extend (Z :. aRows :. All :. All) bTranspose

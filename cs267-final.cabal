@@ -43,7 +43,8 @@ library
       src/particle
       src/tree
   build-depends:
-      base >=4.7 && <5
+      accelerate
+    , base >=4.7 && <5
     , monad-par
     , repa
     , vector
