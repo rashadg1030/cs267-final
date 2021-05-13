@@ -9,10 +9,10 @@ matMul
   => Array U DIM2 a
   -> Array U DIM2 a
   -> m (Array U DIM2 a)
-matMul a b = Repa.sumP (Repa.zipWith (*) aRepl bRepl)
+matMul a b = Repa.sumP (Repa.zipWith (*) aNew bNew)
     where
       bTranspose = Repa.transpose b
       (Z :. aCols :. aRows) = Repa.extent a
       (Z :. bCols :. bRows) = Repa.extent b
-      aExtension = Repa.extend (Z :. All :. bCols :. All) a
-      bExtension = Repa.extend (Z :. aRows :. All :. All) bTranspose
+      aNew = Repa.extend (Z :. All :. bCols :. All) a
+      bNew = Repa.extend (Z :. aRows :. All :. All) bTranspose
