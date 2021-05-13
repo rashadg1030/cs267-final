@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3dbba6b24af50e1934ad64897b6f7279e2a4127c0efd17b2b546eea3aec5d77f
+-- hash: 67ebbf5f10004bb07400c70dd50499ff24bb327d4e8bc3eac267fea5ff031a08
 
 name:           cs267-final
 version:        0.1.0.0
@@ -27,14 +27,7 @@ source-repository head
 
 library
   exposed-modules:
-      AccParticle
       Lib
-      MonadParFib
-      RepaMatMul
-      SerialFib
-      SerialMatMul
-      SerialTree
-      StrategiesFib
   other-modules:
       Paths_cs267_final
   hs-source-dirs:
