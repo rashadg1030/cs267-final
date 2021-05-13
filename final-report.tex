@@ -2,11 +2,38 @@
 % Due date May 13. This is a strict deadline as we need to finish grading by the final grades
 % due date. Final project and poster presentation account for 40% of the the grade.
 % Pre-proposal accounted for 1% of grade.
-\documentclass[a4paper, 12pt]{article}
+\documentclass[a4paper, 10pt]{article}
 
-% \usepackage{caption}
-% \usepackage{float}
-% \usepackage{hyperref}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\definecolor{commentgreen}{RGB}{2,112,10}
+\definecolor{eminence}{RGB}{108,48,130}
+\definecolor{weborange}{RGB}{255,165,0}
+\definecolor{frenchplum}{RGB}{129,20,83}
+\usepackage{listings}
+\lstset {
+    language=C++,
+    frame=tb,
+    tabsize=4,
+    showstringspaces=false,
+    numbers=left,
+    %upquote=true,
+    commentstyle=\color{commentgreen},
+    keywordstyle=\color{eminence},
+    stringstyle=\color{red},
+    basicstyle=\small\ttfamily, % basic font setting
+    emph={int,char,double,float,unsigned,void,bool},
+    emphstyle={\color{blue}},
+    escapechar=\&,
+    % keyword highlighting
+    classoffset=1, % starting new class
+    otherkeywords={>,<,.,;,-,!,=,~},
+    morekeywords={>,<,.,;,-,!,=,~},
+    keywordstyle=\color{weborange},
+    classoffset=0,
+}
 
 % We can define some other document properties too!
 \author{Rashad Gover}
@@ -26,17 +53,58 @@
   In this report, we will explore parallel computation in the pure functional language \textbf{\textit{Haskell}}.
 \end{abstract}
 
-\section{Introduction to Haskell}
-This is the introduction to Haskell, its' properties, and syntax.
+\section{Brief Introduction to Haskell}
+Haskell is a declarative, functional programming language invented in 1971 by a group of programming language researchers for the purpose of exploring the design space of functional languages. Unlike imperative languages which are based on turing machines and embrace state, Haskell and other pure functional languages are based on the lambda calculus, invented by Turing's professor Alonzo Church, where state is dropped in favor of mathematical functions. At a high-level, a Haskell program is just a function that is composed of many smaller functions. On top of being a functional programming language, Haskell is also a strongly, statically typed language which eliminates an entire class of errors (type errors) at compile-time. 
 
-\subsection{Syntax}
-This section goes over the syntax of Haskell
+Haskell has all the basic features that you would expect from any programming language like variables, function declaration,  and a module system for decoupling code. Haskell also has more interesting features like type inferenece, user defined types, pattern matching, type classes, lazy evaluation by default, and monads for modelling side-effects without compromising purity. These traits, besides laziness, make Haskell a prime candidate for implementing parallel algorithms. The declarative nature of Haskell allows the user to focus on the problem at hand instead of the low-level details such as state, the order in which statements are declared, and memory management.  Much of the burden that is usually placed on the shoulders of the programmer is pushed to the advanced compiler, which makes Haskell more "ergonomic" in my opinion. To show this, let's implement a program in C++ and Haskell that takes in an array or list, repspectively, and increments each value, doubles it, and then prints the values. The implementation in C++ would look something like this:
+
+\begin{lstlisting}[language=C++, caption=C++ example]
+#include <iostream>
+int main() {
+  int arrLength = 5;
+  int arr [] = {1, 2, 3, 4, 5};
+  for (int i = 0; i < arrLength; i++) {
+    arr[i] += 1;
+    arr[i] *= 2;
+    std::cout << arr[i] << " ";
+  }
+  return 0;
+}
+\end{lstlisting}
+
+The Haskell implementation would look like so:
+
+\begin{lstlisting}[language=Haskell, caption=Haskell example]
+module Main where
+list = [1, 2, 3, 4, 5]
+incThenDouble x = (x + 1) * 2
+answer = map incThenDouble list
+main = print answer
+\end{lstlisting}
+
+As we can see, the Haskell implementation is much more concise than the C++ implementation. You may also notice that compared to the Haskell version, the C++ version looks much like a "recipe" where each step of transforming the array in to another must be described in detail: how long the array is, how to loop through the array, the types of the variables, etc. The Haskell version on the other hand is very declarative, and as a result looks a lot cleaner and readable. Obviously, this is a contrived example, but in my experience it seems to be the case more often than not that Haskell code looks more approachable compared to an imperative language.
 
 \subsection{Fibonacci Sequence}
 This section will go over the code in Haskell for the Fibonacci Sequence
 
+\begin{lstlisting}[language=Haskell, caption=Haskell Fibonacci]
+module Main where
+fib 0 = 0
+fib 1 = 1
+fib n = fib (n-1) + fib (n-2)
+\end{lstlisting}
+
 \subsection{Matrix Multiplication}
 This section will go over the code in Haskell for Matrix Multiplication
+
+\begin{lstlisting}[language=Haskell, caption=Haskell Fibonacci]
+module Main where
+
+import Data.List
+ 
+ mmult :: Num a => [[a]] -> [[a]] -> [[a]] 
+ mmult a b = [ [ sum $ zipWith (*) ar bc | bc <- (transpose b) ] | ar <- a ]
+\end{lstlisting}
 
 \subsection{Benchmarking}
 This section goes over Threadscope and benchmarks the two examples above. Fibonacci and Matrix Mutiplication.
