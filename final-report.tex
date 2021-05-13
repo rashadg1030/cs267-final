@@ -85,63 +85,107 @@ main = print answer
 As we can see, the Haskell implementation is much more concise than the C++ implementation. You may also notice that compared to the Haskell version, the C++ version looks much like a "recipe" where each step of transforming the array in to another must be described in detail: how long the array is, how to loop through the array, the types of the variables, etc. The Haskell version on the other hand is very declarative, and as a result looks a lot cleaner and readable. Obviously, this is a contrived example, but in my experience it seems to be the case more often than not that Haskell code looks more approachable compared to an imperative language.
 
 \subsection{Fibonacci Sequence}
-This section will go over the code in Haskell for the Fibonacci Sequence
+The Fibonacci sequence is a series of numbers where a number is the addition of the last two numbers, starting with 0, and 1. The serial implementation in Haskell is very straightforward. The following isn't the fastest implementation, but is probably the most idiomatic:
 
 \begin{lstlisting}[language=Haskell, caption=Haskell Fibonacci]
-module Main where
-fib 0 = 0
-fib 1 = 1
-fib n = fib (n-1) + fib (n-2)
+module SerialFib where
+
+nfib
+  :: Int  -- The nth number in the fibonacci sequence that you want
+  -> Int -- The result
+nfib 0 = 0
+nfib 1 = 1
+nfib n = nfib (n-1) + nfib (n-2)
 \end{lstlisting}
+
+We pattern match on the value of the integer: if the value is 0 return 0, and if it is 1 return 1. Otherwise, return the sum of fib of the previous fibonacci number and the fibonacci before the previous one. 
+
+The use of recursion has some performance implications. The memory performance of recursive functions in Haskell differs depending on whether or not the recursive function is \textbf{\textit{tail recursive}}. A recursive function is tail recursive if the final result of the recursive call is the final result of the function itself. If the result of the recursive call must be further processed (say, by adding 1 to it, or consing another element onto the beginning of it), it is not tail recursive. So in the case above, the function nfib is not tail recursive.
 
 \subsection{Matrix Multiplication}
-This section will go over the code in Haskell for Matrix Multiplication
+
+To represent matrix multiplication in Haskell, we use the \lstinline{Vector} data type over the more idiomatic \lstinline{List} data type. This is to enhance the performance of the serial program since \lstinline{List} in Haskel is a lazy data structure,  while a \lstinline{Vector} value represents an \textbf{\textit{unboxed array}} under the hood and thus has an \textit{O(1)} length operation and data access.
 
 \begin{lstlisting}[language=Haskell, caption=Haskell Fibonacci]
-module Main where
+module SerialMatMul where
 
-import Data.List
- 
- mmult :: Num a => [[a]] -> [[a]] -> [[a]] 
- mmult a b = [ [ sum $ zipWith (*) ar bc | bc <- (transpose b) ] | ar <- a ]
+import Data.Vector (Vector(..), (!))
+import qualified Data.Vector as Vector
+
+matMul
+  :: (Eq a, Num a)
+  => Vector (Vector a)
+  -> Vector (Vector a)
+  -> Either String (Vector (Vector a))
+matMul a b
+  | Vector.length a == 0 || Vector.length b == 0 = Left "Empty matrices can't be used"
+  | not (isConsistentMatrix a) || not (isConsistentMatrix b) = Left "The dimensions of the matrices are inconsistent"
+  | numOfCol a /= numOfRow b = Left "These matrices are incompatible for multiplication"
+  | otherwise = Right $ mul a b
+  where
+    numOfCol m = Vector.length $ Vector.head m
+    numOfRow m = Vector.length m
 \end{lstlisting}
+
+Ideally, to leverage the advanced type sytem of Haskell we would encode the length of the vectors in their types. The compiler would then be able to automatically handle any cases in which the dimensions of the matrices represented as vectors don't match up correctly. This is known as \textbf{\textit{type-level programming}} and it allows the programmer to encode information in types to provide more information for the compiler and further constrain the number of unwanted outcomes. I opted for the above implementation due to ease of implementation and better performance, but needed to add guards to check the dimensions of the matrices at the value-level.
 
 \subsection{Benchmarking}
 This section goes over Threadscope and benchmarks the two examples above. Fibonacci and Matrix Mutiplication.
 
-\section{Parallel Evaluation Strategies}
+\section{Parallel Haskell}
+
+\subsection{Parallel Evaluation Strategies}
 This section will breifly explain Strategies and the Eval monad, and the functions rpar and rseq.
 
-\subsection{Results}
-This section will have the results for the Fibonacci Sequence and Matrix Multiplication using Strategies.
-
-\section{Dataflow Parallelism with monad-par}
-This section will introduce the Par Monad and the concept of dataflow parallelism.
-
-\subsection{Results}
+\subsubsection{Fibonacci Implementation}
 This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
 
-\section{Accelerate Library}
+\subsubsection{Results}
+This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
+
+\subsection{Dataflow Parallelism with monad-par}
+This section will introduce the Par Monad and the concept of dataflow parallelism.
+
+\subsubsection{Fibonacci Implementation}
+This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
+
+\begin{lstlisting}
+module MonadParFib where
+
+import Control.Monad.Par
+
+nfib :: Int -> Par Int
+nfib n = do
+  firstComputation <- spawn (pfib (n - 1))
+  secondValue <- pfib (n - 2)
+  firstValue <- get firstComputation
+  return (firstValue + secondValue)
+\end{lstlisting}
+
+\subsubsection{Results}
+This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
+
+\subsection{Regular Parallel Arrays}
+
+\subsubsection{Matrix Multiplication Implementation}
+This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
+
+\subsubsection{Results}
+This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
+
+\subsection{Particle Simulation with Accelerate Library}
 This section goes over the Accerlerate library and the idea of embedded DSLs withing Haskell, for which it
  is known for. In this section, HW2 particle simulation is used
 
-\subsection{Particle Simulation}
-This section describes the Particle Simulation algorithm in some detail and HW2.
+\subsubsection{Particle Simulation}
 
-\subsection{Multicore Programming with Accelerate}
-This section goes over multicore programming in Accelerate.
+\subsubsection{Multicore Results}
+This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
 
-\subsubsection{Results \& Comparison with OpenMP}
-In this section we compare the results with the OpenMP variant of the HW.
-
-\subsection{GPU Programming with Accelerate}
+\subsubsection{GPU Results}
 This section goes over GPU programming in Accelerate. This will be pretty much the same
 as the multicore programming in the above section because we can write programs for both platforms
 with a single syntax! The syntax used to describe the parallel program is decoupled from the platform it runs on which is great.
-
-
-\subsubsection{Results \& Comparison with CUDA}
-This section will go over the benchmark results and compare it with the CUDA implementation of HW2.
 
 \section{Conclusion}
 This section will rap up the results of the benchmarks and come to conclusion. Was climbing up the

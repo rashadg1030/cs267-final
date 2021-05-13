@@ -16,12 +16,15 @@ matMul a b
   where
     numOfCol m = Vector.length $ Vector.head m
     numOfRow m = Vector.length m
-    mul :: Num a => Vector (Vector a) -> Vector (Vector a) -> Vector (Vector a)
-    mul a b = do
-      aRows <- a
-      return $ do
-        bCols <- transpose b
-        return $ Vector.sum $ Vector.zipWith (*) aRows bCols
+
+-- Helpers
+
+mul :: Num a => Vector (Vector a) -> Vector (Vector a) -> Vector (Vector a)
+mul a b = do
+  aRows <- a
+  return $ do
+    bCols <- transpose b
+    return $ Vector.sum $ Vector.zipWith (*) aRows bCols
 
 transpose :: Vector (Vector a) -> Vector (Vector a)
 transpose v = Vector.fromList [ Vector.fromList [ v ! col ! row | col <- [0 .. maxCol] ] | row <- [0 .. maxRow] ]
