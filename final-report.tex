@@ -8,6 +8,9 @@
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{xcolor}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
 \definecolor{commentgreen}{RGB}{2,112,10}
 \definecolor{eminence}{RGB}{108,48,130}
 \definecolor{weborange}{RGB}{255,165,0}
@@ -54,9 +57,9 @@
 \end{abstract}
 
 \section{Brief Introduction to Haskell}
-Haskell is a declarative, functional programming language invented in 1971 by a group of programming language researchers for the purpose of exploring the design space of functional languages. Unlike imperative languages which are based on turing machines and embrace state, Haskell and other pure functional languages are based on the lambda calculus, invented by Turing's professor Alonzo Church, where state is dropped in favor of mathematical functions. At a high-level, a Haskell program is just a function that is composed of many smaller functions. On top of being a functional programming language, Haskell is also a strongly, statically typed language which eliminates an entire class of errors (type errors) at compile-time. 
+Haskell is a declarative, functional programming language invented in 1987 by a group of programming language researchers for the purpose of exploring the design space of functional languages. Unlike imperative languages which are based on turing machines and embrace state, Haskell and other pure functional languages are based on the lambda calculus, invented by Turing's professor Alonzo Church, where state is dropped in favor of mathematical functions. At a high-level, a Haskell program is just a function that is composed of many smaller functions. On top of being a functional programming language, Haskell is also a strongly, statically typed language which eliminates an entire class of errors (type errors) at compile-time. 
 
-Haskell has all the basic features that you would expect from any programming language like variables, function declaration,  and a module system for decoupling code. Haskell also has more interesting features like type inferenece, user defined types, pattern matching, type classes, lazy evaluation by default, and monads for modelling side-effects without compromising purity. These traits, besides laziness, make Haskell a prime candidate for implementing parallel algorithms. The declarative nature of Haskell allows the user to focus on the problem at hand instead of the low-level details such as state, the order in which statements are declared, and memory management.  Much of the burden that is usually placed on the shoulders of the programmer is pushed to the advanced compiler, which makes Haskell more "ergonomic" in my opinion. To show this, let's implement a program in C++ and Haskell that takes in an array or list, repspectively, and increments each value, doubles it, and then prints the values. The implementation in C++ would look something like this:
+Haskell has all the basic features that you would expect from any programming language like variables, function declaration,  and a module system for decoupling code. Haskell also has more interesting features like type inferenece, user defined types, pattern matching, type classes, lazy evaluation by default, and monads for modelling side-effects without compromising purity. These traits, besides laziness, make Haskell a good candidate for implementing parallel algorithms. The declarative nature of Haskell allows the user to focus on the problem at hand instead of the low-level details such as state, the order in which statements are declared, and memory management.  Much of the burden that is usually placed on the shoulders of the programmer is pushed to the advanced compiler, which makes Haskell more "ergonomic" in my opinion. To show this, let's implement a program in C++ and Haskell that takes in an array or list, repspectively, and increments each value, doubles it, and then prints the values. The implementation in C++ would look something like this:
 
 \begin{lstlisting}[language=C++, caption=C++ example]
 #include <iostream>
@@ -82,7 +85,7 @@ answer = map incThenDouble list
 main = print answer
 \end{lstlisting}
 
-As we can see, the Haskell implementation is much more concise than the C++ implementation. You may also notice that compared to the Haskell version, the C++ version looks much like a "recipe" where each step of transforming the array in to another must be described in detail: how long the array is, how to loop through the array, the types of the variables, etc. The Haskell version on the other hand is very declarative, and as a result looks a lot cleaner and readable. Obviously, this is a contrived example, but in my experience it seems to be the case more often than not that Haskell code looks more approachable compared to an imperative language.
+As we can see, the Haskell implementation is much more concise than the C++ implementation. You may also notice that compared to the Haskell version, the C++ version looks much like a "recipe" where each step of transforming the array in to another must be described in detail: how long the array is, how to loop through the array, the types of the variables, etc. The Haskell version on the other hand is very declarative, and as a result looks a lot cleaner and readable. Obviously, this is a contrived example, but in my experience it seems to be the case more often than not that Haskell code looks more approachable compared to an imperative language. The idea is that this same conciseness will carry over to parallel programs.
 
 \subsection{Fibonacci Sequence}
 The Fibonacci sequence is a series of numbers where a number is the addition of the last two numbers, starting with 0, and 1. The serial implementation in Haskell is very straightforward. The following isn't the fastest implementation, but is probably the most idiomatic:
@@ -96,15 +99,15 @@ nfib 1 = 1
 nfib n = nfib (n-1) + nfib (n-2)
 \end{lstlisting}
 
-We pattern match on the value of the integer: if the value is 0 return 0, and if it is 1 return 1. Otherwise, return the sum of fib of the previous fibonacci number and the fibonacci before the previous one. 
+We pattern match on the value of the integer: if the value is 0 return 0, and if it is 1 return 1. Otherwise, return the sum of fib of the previous fibonacci number and the fibonacci number before the previous one. 
 
-The use of recursion has some performance implications. The memory performance of recursive functions in Haskell differs depending on whether or not the recursive function is \textbf{\textit{tail recursive}}. A recursive function is tail recursive if the final result of the recursive call is the final result of the function itself. If the result of the recursive call must be further processed (say, by adding 1 to it, or consing another element onto the beginning of it), it is not tail recursive. So in the case above, the function nfib is not tail recursive.
+The use of recursion has some performance implications. The memory performance of recursive functions in Haskell differs depending on whether or not the recursive function is \textbf{\textit{tail recursive}}. A recursive function is tail recursive if the final result of the recursive call is the final result of the function itself. If the result of the recursive call must be further processed, it is not tail recursive. So in the case above, the function \lstinline{nfib} is not tail recursive.
 
 \subsection{Matrix Multiplication}
 
 To represent matrix multiplication in Haskell, we use the \lstinline{Vector} data type over the more idiomatic \lstinline{List} data type. This is to enhance the performance of the serial program since \lstinline{List} in Haskel is a lazy data structure,  while a \lstinline{Vector} value represents an \textbf{\textit{unboxed array}} under the hood and thus has an \textit{O(1)} length operation and data access.
 
-\begin{lstlisting}[language=Haskell, caption=Haskell Fibonacci]
+\begin{lstlisting}[language=Haskell, caption=Haskell MatMul]
 module SerialMatMul where
 
 import Data.Vector (Vector(..), (!))
@@ -128,7 +131,22 @@ matMul a b
 Ideally, to leverage the advanced type sytem of Haskell we would encode the length of the vectors in their types. The compiler would then be able to automatically handle any cases in which the dimensions of the matrices represented as vectors don't match up correctly. This is known as \textbf{\textit{type-level programming}} and it allows the programmer to encode information in types to provide more information for the compiler and further constrain the number of unwanted outcomes. I opted for the above implementation due to ease of implementation and better performance, but needed to add guards to check the dimensions of the matrices at the value-level.
 
 \subsection{Benchmarking}
-This section goes over Threadscope and benchmarks the two examples above. Fibonacci and Matrix Mutiplication.
+
+All benchmarks were recorded on my personal laptop. The machine used for all tests has 4 cores and 16GB RAM. I'm using some simple timer functions to get the times for my data, so they may not be the most accurate results:
+
+\begin{lstlisting}[language=Haskell, caption=Clock functions]
+currentTime = getCurrentTime
+
+timeElapsedSince t0 = do
+  t1 <- getCurrentTime
+  printf "time: %.2fs\n" (realToFrac (diffUTCTime t1 t0) :: Double)
+\end{lstlisting}
+
+The results for the serial version of Fibonacci were interesting:
+
+\includegraphics[scale=0.5]{serialFibData}
+
+The function was able to able to handle calculating the Fibonacci numbers in a reasonable amount of time up until I tried to ask it for the 40th Fibonacci number and beyond. After asking for the 45th number, the time it took to come up with an answer increased exponentially. Asking for the 50th Fibonacci number took 81.94 seconds!
 
 \section{Parallel Haskell}
 
@@ -157,11 +175,15 @@ nfib n = do
 
 The \lstinline{spawn} function forks a new thread where the calculation of the previous Fibonacci number happens. Then,  the result of a second call to \lstinline{nfib} is produced. While the second value is being calculated, the first computation is still running or maybe already done. Once the second value has been produced, the value of the first computation must be extracted to use it. Finally, the two results are combined to produce the final answer. It helps to think of it as branching tree, where each call to \lstinline{nfib} produces two more branches that run in parallel.
 
+It also important to note that the runtime of the `Par` monad is based on \textit{sparks} which are different than threads in the context of Haskell, where "threads" usually refer to green threads.
+
 \subsubsection{Results}
+
+Unfortunately, I was unable to obtain any useful results from benchmarking this function. My computer crashed even when asking for the 1st Fibonacci number, so it did really bad compared to the serial version, which is not what I expected. Trying to run the program on any amount of cores, from 1 - 4, produced no results. Each time the program ended with \lstinline{Killed} as the output. As far as I know, this means that the runtime ran out of memory or got hung up at a certain point in the program. I honestly don't know what went wrong here. My theory is that my machine is too weak, or the overhead of using \lstinline{monad-par} is too much. From my research, similar examples with branching logic seemed to work fine, so I'm not sure if it just has to do with my machine. Since the Haskell runtime is really complex, it's more likely that I missed an opportunity to make some part of the program strict instead of lazy, which Haskell is by default. I've been burned in the past by Haskell's laziness, so this wouldn't be the first time.
 
 \subsection{Regular Parallel Arrays}
 
-In contrast to dataflow parallelism which is great for recursive problems, Haskell has an array-based library called \lstinline{repa} that is great for any problems that can be modelled as an array of data. \lstinline{repa} gives you the ability to represent polymorphic, parallel arrays in Haskell, which is a big step up from the more commonly used, but less performant \lstinline{List} or \lstinline{Vector} data types. Any functions that use the data structures and special operators provided by the  \lstinline{repa} library are automatically parallelized by simply passing in a flag to GHC (Glasgow Haskell Compiler). This makes it easy to parallelize serial code that use sequential data structures ineffeciently.
+In contrast to dataflow parallelism which is great for recursive problems, Haskell has an array-based library called \lstinline{repa} that is great for any problems that can be modelled as an array. \lstinline{repa} gives you the ability to represent polymorphic, parallel arrays in Haskell, which is a big step up from the more commonly used, but less performant \lstinline{List} or \lstinline{Vector} data types. Any functions that use the data structures and special operators provided by the  \lstinline{repa} library are automatically parallelized by simply passing in a flag to GHC (Glasgow Haskell Compiler). This makes it easy to parallelize serial code that use sequential data structures ineffeciently.
 
 \subsubsection{Matrix Multiplication Implementation}
 
@@ -191,31 +213,59 @@ matMul a b = Repa.sumP (Repa.zipWith (*) aNew bNew)
 The nice thing about this implementation is that not only is it more performant that the serial implementation introduced earlier, but it also more \textit{type safe}, meaning that the compiler can better catch our mistakes because it knows more about the program at compile-time. If you look at the type signature of the \lstinline{matMul} function, you can see that it provides the shape of the array and the exact dimensions of the array. In our case, we are using an array of 2 dimensions, so the \lstinline{Array} type is given the type \lstinline{DIM2} as an argument to represent this. These more detailed types also allow the Haskell runtime to make better optimizations to the code.
 
 \subsubsection{Results}
-This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
+
+I also failed to obtain any useful results from benchmarking this function either, which is a shame because I spent a lot of time implementing this one. My theory is that I was unable to effeciently convert from the \lstinline{List} data type to the \lstinline{repa} data types that are required for the parallelism to work. After discussion with community memebers, it seems that the function should work correctly, but the IO that I perform to setup the function for testing maybe the bottleneck.
 
 \subsection{Particle Simulation with Accelerate Library}
-This section goes over the Accerlerate library and the idea of embedded DSLs withing Haskell, for which it
- is known for. In this section, HW2 particle simulation is used
 
-\subsubsection{Particle Simulation}
-
-\subsubsection{Multicore Results}
-This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
-
-\subsubsection{GPU Results}
-This section goes over GPU programming in Accelerate. This will be pretty much the same
-as the multicore programming in the above section because we can write programs for both platforms
-with a single syntax! The syntax used to describe the parallel program is decoupled from the platform it runs on which is great.
+Implementing a particle simulator in Haskell using the \lstinline{accelerate} library was the main focus of the paper, but like my \lstinline{monad-par} and \lstinline{repa} implementations, I was unable to obtain any meaningful results. I reached out to the official maintainer of the library to see what I could do, but received no response. The community reccomended that I use another similar library called \lstinline{massiv} to see what happens. I was too deep in and decided to go forward with what I had, but ultimately came to no conclusion on whether or not \lstinline{accelerate} is effective for particle simulation. I was inspired by the examples provided by the \lstinline{accelerate} library and everything type-checked and compiled, but was I unable to benchmark the simulation function and get useful results.
 
 \section{Honorable Mentions}
 
+There were some other paths that I went down on my journey to proving Haskell useful in a parallel computing context. Besides the  \lstinline{monad-par} library, there is a similar library called \lstinline{strategies} that cought my eye early on, but I dropped it due to its' similarity to \lstinline{monad-par}. Now I wonder if going with \lstinline{strategies} would've produced a better outcome, but I can't be sure.
+
+Another worthy mention are a group of functions I implemented for microbenchmarking called \lstinline{checkAll} (serial) and \lstinline{checkAllPar} (parallel) which check to see if every value in a binary tree satisfy a given predicate. I used the \lstinline{monad-par} library to implement this due to its' branching, recursive nature and ran into the same issues I ran into with my implementation of the Fibonnaci sequence solver. Since it is nearly identical to my Fibonacci example, I left it out to pursue the more interesting aspects of the project, but feel free to check out the repository code if you're interested in seeing how it works. Here's what the code for those functions looks like:
+
+\begin{lstlisting}[language=Haskell, caption=Serial Tree check]
+module Tree.SerialTree where
+
+data Tree a = Leaf a
+            | Node (Tree a) (Tree a)
+  deriving (Eq, Show)
+
+-- Check that all values in the tree satisfy a given predicate
+checkAll :: (a -> Bool) -> Tree a -> Bool
+checkAll pred (Leaf value) = pred value
+checkAll pred (Node leftTree rightTree) = (checkAll pred leftTree) && (checkAll pred rightTree)
+\end{lstlisting}
+
+\begin{lstlisting}[language=Haskell, caption=Tree check using monad-par]
+module Tree.MonadParTree where
+
+import Tree.SerialTree (Tree(..))
+import Control.Monad.Par
+
+-- Test whether all elements match the given predicate (in parallel)
+checkAllPar :: (a -> Bool) -> Tree a -> Par Bool
+checkAllPar pred (Leaf value) = return $ pred value
+checkAllPar pred (Node leftTree rightTree) = do
+  leftTreeComputation <- spawn $ checkAllPar pred leftTree
+  rightTreeResult  <- checkAllPar pred rightTree
+  leftTreeResult  <- get leftTreeComputation
+  return $ leftTreeResult && rightTreeResult
+\end{lstlisting}
 
 \section{Conclusion}
-This section will rap up the results of the benchmarks and come to conclusion. Was climbing up the
- abstraction ladder worth the tradeoff in performance? Was the drop in performance of the Haskell implementations
- worth the better ergonomics? This could be argued, especially if the user isn't familiar with functional programming.
- Was the performance of the Haskell programs not that much of a difference from the C++ implementations? What do overhead costs look like?
- How does scaling compare between the two platforms? Weak and strong scaling.
+
+All in all, I can truly say that my initial hypothesis of Haskell being a more "ergonomic" language than a traditional imperative language for expressing parallel algorithms was wrong. Yes, the code may be more concise and prettier, but the setup and tooling around parallel programming seems to be lacking when compared to other languages. I found little resources and knowledge on benchmarking and reasoning about parallelism in Haskell. As a Haskell developer of a couple years now, even reasoning about serial code can be difficult, but I didn't expect parallelism in Haskell to be this much harder. 
+
+Another pain point I experienced was laziness. Laziness makes predicting what the runtime is going to do a lot more difficult and it really hurt me. In the back of my head, I still wonder if some of my benchmarks weren't working simply because of a failure to reduce a thunk or use a strict data type. Laziness does provide by benefits, like forcing the language to be pure and having the ability to produce streams of data easily, but for parallel programming lazy evaluation is definitely a pain.
+
+Last but not least, I failed on my part to find a strong machine to test my programs out on. I was unable to setup the Haskell environment on CORI so my laptop was the best option knowing what I knew at the time I started this project. If I could do it over again, I would use a machine on Digital Ocean or AWS to rule out any sort of issues that may have been caused by using a machine that is too weak.
+
+The best things about the project were that I got to get more familiar with one of my favorite programming languages, and got to see parallel programming from another perspective that it isn't seen from often.
+So to answer to the question I initially had at the start of this journey, I would say that Haskell is most definitely not the best tool for parallel programming. I wasn't expecting it to be, but at the same time, I didn't expect the experience to be as bad as it was. At the end of the day, I must also consider my lack in skill and the fact that I wasn't able to devote 100\% of my focus to this project as I would've liked. I hope one day I can revisit this project and give it the conclusion it deserves.
+
 
 \section{Prior Work \& Resources}
 
