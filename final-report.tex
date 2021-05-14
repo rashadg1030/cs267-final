@@ -90,9 +90,7 @@ The Fibonacci sequence is a series of numbers where a number is the addition of 
 \begin{lstlisting}[language=Haskell, caption=Haskell Fibonacci]
 module SerialFib where
 
-nfib
-  :: Int  -- The nth number in the fibonacci sequence that you want
-  -> Int -- The result
+nfib :: Int -> Int
 nfib 0 = 0
 nfib 1 = 1
 nfib n = nfib (n-1) + nfib (n-2)
@@ -134,30 +132,19 @@ This section goes over Threadscope and benchmarks the two examples above. Fibona
 
 \section{Parallel Haskell}
 
-\subsection{Parallel Evaluation Strategies}
-This section will breifly explain Strategies and the Eval monad, and the functions rpar and rseq.
-
-\subsubsection{Fibonacci Implementation}
-This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
-
-\subsubsection{Results}
-This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
-
 \subsection{Dataflow Parallelism with monad-par}
-This section will introduce the Par Monad and the concept of dataflow parallelism.
 
 \subsubsection{Fibonacci Implementation}
-This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Haskell, caption=Fibonnaci using monad-par library]
 module MonadParFib where
 
 import Control.Monad.Par
 
 nfib :: Int -> Par Int
 nfib n = do
-  firstComputation <- spawn (pfib (n - 1))
-  secondValue <- pfib (n - 2)
+  firstComputation <- spawn (nfib (n - 1))
+  secondValue <- nfib (n - 2)
   firstValue <- get firstComputation
   return (firstValue + secondValue)
 \end{lstlisting}
@@ -169,6 +156,27 @@ This section will have the results for the Fibonacci Sequence and Matrix Multipl
 
 \subsubsection{Matrix Multiplication Implementation}
 This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
+
+\begin{lstlisting}[language=Haskell, caption=Matrix multiplication using repa library]
+module RepaMatMul where
+
+import Data.Array.Repa (Array(..), U(..), Z(..), DIM2(..), (:.)(..))
+import Data.Array.Repa as Repa
+import Data.Vector.Unboxed.Base (Unbox(..))
+
+matMul
+  :: (Monad m, Num a, Unbox a)
+  => Array U DIM2 a
+  -> Array U DIM2 a
+  -> m (Array U DIM2 a)
+matMul a b = Repa.sumP (Repa.zipWith (*) aNew bNew)
+    where
+      bTranspose = Repa.transpose b
+      (Z :. aCols :. aRows) = Repa.extent a
+      (Z :. bCols :. bRows) = Repa.extent b
+      aNew = Repa.extend (Z :. All :. bCols :. All) a
+      bNew = Repa.extend (Z :. aRows :. All :. All) bTranspose
+\end{lstlisting}
 
 \subsubsection{Results}
 This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.

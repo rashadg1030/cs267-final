@@ -28,11 +28,6 @@ data World = World
   , worldTime :: {-# UNPACK #-} !Time
   }
 
--- Constants
-defMass = 0.1
-defCutoff = 0.1
-defMinR = (defCutoff / 100.0)
-
 advanceParticles
   :: (Acc (Vector PosMass) -> Acc (Vector Accel))
   -> Acc (Scalar Time)
@@ -145,3 +140,74 @@ moveParticle time p = lift ( pm', vel', acc )
     pm'         = lift (pos', mass) :: Exp PosMass
     pos'        = pos + time *^ vel
     vel'        = vel + time *^ acc
+
+
+calcAccels :: Acc (Vector PosMass) -> Acc (Vector Accel)
+calcAccels bodies =
+  let
+    move body = A.sfoldl
+      (\acc next -> acc + calcAccel body next)
+      0
+      (constant Z)
+      bodies
+  in
+    A.map move bodies
+
+runSimulation :: IO ()
+runSimulation = do
+    beginMonitoring
+    (conf, opts, rest) <- parseArgs options defaults header footer
+
+    n           = get configBodyCount conf
+    size        = get configWindowSize conf
+    fps         = get configRate conf
+    epsilon     = get configEpsilon conf
+    mass        = get configBodyMass conf
+    radius      = get configStartDiscSize conf
+    backend     = get optBackend opts
+
+        -- Generate random particle positions in a disc layout centred at
+        -- the origin. Start the system rotating with particle speed
+        -- proportional to distance from the origin
+        --
+        positions      <- randomArray (cloud (size,size) radius) (Z :. n)
+        masses         <- randomArray (uniformR (1, mass)) (Z :. n)
+
+        let bodies      = run backend
+                        $ A.map (setStartVelOfBody . constant $ get configStartSpeed conf)
+                        $ A.zipWith setMassOfBody (A.use masses)
+                        $ A.map unitBody (A.use positions)
+
+            -- The initial simulation state
+            --
+            universe    = initialise world
+            world       = World { worldBodies   = bodies
+                                , worldSteps    = 0
+                                , worldTime     = 0 }
+
+            -- Advancing the simulation
+            --
+            advance     = advanceWorld step
+            step        = P.curry
+                        $ run1 backend
+                        $ A.uncurry
+                         $ constant epsilon)
+
+
+        -- Forward unto dawn
+        --
+        runTests opts rest
+          $ makeTests step
+
+        runBenchmarks opts rest
+          [ bench "n-body" $ whnf (advance 0.1) world ]
+
+        runInteractive opts rest
+          $ play
+              (InWindow "N-Body" (size, size) (10, 10))         -- window size & position
+              black                                             -- background colour
+              fps                                               -- number of simulation steps per second
+              universe                                          -- initial world
+              (draw conf)                                       -- fn to convert a world into a picture
+              react                                             -- fn to handle input events
+              (simulate advance)                                -- fn to advance the world
