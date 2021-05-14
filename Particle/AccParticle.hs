@@ -1,4 +1,4 @@
-module AccParticle where
+module Particle.AccParticle where
 
 import Data.Array.Accelerate                    as A hiding (V2)
 import Data.Array.Accelerate.Control.Lens

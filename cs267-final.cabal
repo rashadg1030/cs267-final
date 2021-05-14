@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 9e949776680481d22ade5cc7137a6bd066ea9537270d207be97a3afc3cb0bd6a
+-- hash: 0090ffc65d9249e70a9ddf6495f1049f6f67c7c9c252809a480d1d9a8b23a13a
 
 name:           cs267-final
 version:        0.1.0.0
@@ -27,28 +27,24 @@ source-repository head
 
 library
   exposed-modules:
-      SerialFib
-      MonadParFib
-      SerialMatMul
-      RepaMatMul
-      AccParticle
-      SerialTree
-      MonadParTree
+      Clock
+      Fib.MonadParFib
+      Fib.SerialFib
+      MatMul.RepaMatMul
+      MatMul.SerialMatMul
+      Tree.MonadParTree
+      Tree.SerialTree
   other-modules:
       Paths_cs267_final
   hs-source-dirs:
       src
-      src/fib
-      src/matmul
-      src/particle
-      src/tree
   build-depends:
-      accelerate >= 1.3.0.0
-    , linear-accelerate
-    , lens-accelerate
+      accelerate
     , base >=4.7 && <5
+    , linear-accelerate
     , monad-par
     , repa
+    , time
     , vector
   default-language: Haskell2010
 
@@ -60,10 +56,49 @@ executable cs267-final-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      accelerate
+    , base >=4.7 && <5
     , cs267-final
+    , linear-accelerate
     , monad-par
     , repa
+    , time
+    , vector
+  default-language: Haskell2010
+
+executable runParFib-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_cs267_final
+  hs-source-dirs:
+      parFib
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      accelerate
+    , base >=4.7 && <5
+    , cs267-final
+    , linear-accelerate
+    , monad-par
+    , repa
+    , time
+    , vector
+  default-language: Haskell2010
+
+executable runSerialFib-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_cs267_final
+  hs-source-dirs:
+      serialFib
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      accelerate
+    , base >=4.7 && <5
+    , cs267-final
+    , linear-accelerate
+    , monad-par
+    , repa
+    , time
     , vector
   default-language: Haskell2010
 
@@ -76,9 +111,12 @@ test-suite cs267-final-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      accelerate
+    , base >=4.7 && <5
     , cs267-final
+    , linear-accelerate
     , monad-par
     , repa
+    , time
     , vector
   default-language: Haskell2010

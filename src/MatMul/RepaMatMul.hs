@@ -1,4 +1,4 @@
-module RepaMatMul where
+module MatMul.RepaMatMul where
 
 import Data.Array.Repa (Array(..), U(..), Z(..), DIM2(..), (:.)(..))
 import Data.Array.Repa as Repa

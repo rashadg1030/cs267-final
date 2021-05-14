@@ -1,4 +1,4 @@
-module MonadParFib where
+module Fib.MonadParFib where
 
 import Control.Monad.Par
 

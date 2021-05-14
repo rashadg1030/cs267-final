@@ -1,4 +1,4 @@
-module SerialFib where
+module Fib.SerialFib where
 
 nfib :: Int -> Int
 nfib 0 = 0

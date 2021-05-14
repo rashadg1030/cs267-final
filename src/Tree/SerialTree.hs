@@ -1,4 +1,4 @@
-module SerialTree where
+module Tree.SerialTree where
 
 data Tree a = Leaf a
             | Node (Tree a) (Tree a)

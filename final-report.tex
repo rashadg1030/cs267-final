@@ -132,9 +132,15 @@ This section goes over Threadscope and benchmarks the two examples above. Fibona
 
 \section{Parallel Haskell}
 
+There are various ways of expressing parallelism in Haskell ranging from monad-based libraries like \lstinline{monad-par} to embedded DSLs (Domain Specific Languages) like \lstinline{accelerate}. These libraries can be vastly different from one another, so the programmer must know how to choose the right tool for the job. Certain libraries will only really make sense for certain types of problems. To test these various methods of expressing parallelism, I've created a series of microbenchmarks to test them and compare them will serial versions of the same program.
+
 \subsection{Dataflow Parallelism with monad-par}
 
+Dataflow parallelism is best used for implementing parallel algorithms where the problem can be broken down into smaller pieces and solved recursively. Problems that would fit in this category are generating the nth Fibonacci number, mergesort, or traversing a binary tree. The best library I found for expressing dataflow parallelism is \lstinline{monad-par}. Monads are a \textit{class of types} that are commonly used in Haskell as a way to model functions that produce effects. Monads can express many different types of effects, such as non-determinism, state, IO with the outside world, and also parallelism. With out monads, these sort of effectful functions couldn't exist in a pure functional language like Haskell. The \lstinline{monad-par} library defines a monad for the user through which they can express parallel computation.
+
 \subsubsection{Fibonacci Implementation}
+
+Since \lstinline{monad-par} is great for problems that can be recursively broken down and solved, it is  a perfect fit for parallelizing the \lstinline{nfib} function defined earlier:
 
 \begin{lstlisting}[language=Haskell, caption=Fibonnaci using monad-par library]
 module MonadParFib where
@@ -149,13 +155,17 @@ nfib n = do
   return (firstValue + secondValue)
 \end{lstlisting}
 
+The \lstinline{spawn} function forks a new thread where the calculation of the previous Fibonacci number happens. Then,  the result of a second call to \lstinline{nfib} is produced. While the second value is being calculated, the first computation is still running or maybe already done. Once the second value has been produced, the value of the first computation must be extracted to use it. Finally, the two results are combined to produce the final answer. It helps to think of it as branching tree, where each call to \lstinline{nfib} produces two more branches that run in parallel.
+
 \subsubsection{Results}
-This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
 
 \subsection{Regular Parallel Arrays}
 
+In contrast to dataflow parallelism which is great for recursive problems, Haskell has an array-based library called \lstinline{repa} that is great for any problems that can be modelled as an array of data. \lstinline{repa} gives you the ability to represent polymorphic, parallel arrays in Haskell, which is a big step up from the more commonly used, but less performant \lstinline{List} or \lstinline{Vector} data types. Any functions that use the data structures and special operators provided by the  \lstinline{repa} library are automatically parallelized by simply passing in a flag to GHC (Glasgow Haskell Compiler). This makes it easy to parallelize serial code that use sequential data structures ineffeciently.
+
 \subsubsection{Matrix Multiplication Implementation}
-This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.
+
+The \lstinline{repa} library is an obvious fit for parallelizing matrix multiplication. Instead of using a nested \lstinline{Vector} data type to represent a matrix, we can use the array shapes provided by the `repa` library:
 
 \begin{lstlisting}[language=Haskell, caption=Matrix multiplication using repa library]
 module RepaMatMul where
@@ -177,6 +187,8 @@ matMul a b = Repa.sumP (Repa.zipWith (*) aNew bNew)
       aNew = Repa.extend (Z :. All :. bCols :. All) a
       bNew = Repa.extend (Z :. aRows :. All :. All) bTranspose
 \end{lstlisting}
+
+The nice thing about this implementation is that not only is it more performant that the serial implementation introduced earlier, but it also more \textit{type safe}, meaning that the compiler can better catch our mistakes because it knows more about the program at compile-time. If you look at the type signature of the \lstinline{matMul} function, you can see that it provides the shape of the array and the exact dimensions of the array. In our case, we are using an array of 2 dimensions, so the \lstinline{Array} type is given the type \lstinline{DIM2} as an argument to represent this. These more detailed types also allow the Haskell runtime to make better optimizations to the code.
 
 \subsubsection{Results}
 This section will have the results for the Fibonacci Sequence and Matrix Multiplication usingthe Par Monad.

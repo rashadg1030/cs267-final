@@ -26,6 +26,7 @@ dependencies:
 - vector
 - monad-par
 - repa
+- time
 
 library:
   source-dirs: src
@@ -34,6 +35,26 @@ executables:
   cs267-final-exe:
     main:                Main.hs
     source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - cs267-final
+
+  runSerialFib-exe:
+    main:                Main.hs
+    source-dirs: serialFib
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - cs267-final
+
+  runParFib-exe:
+    main:        Main.hs
+    source-dirs: parFib
     ghc-options:
     - -threaded
     - -rtsopts

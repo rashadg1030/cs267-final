@@ -1,4 +1,4 @@
-module SerialMatMul where
+module MatMul.SerialMatMul where
 
 import Data.Vector (Vector(..), (!))
 import qualified Data.Vector as Vector
