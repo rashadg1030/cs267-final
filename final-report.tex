@@ -7,6 +7,17 @@
 \usepackage{caption}
 \usepackage{float}
 \usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+}
+
+\urlstyle{same}
+
 \usepackage{xcolor}
 \usepackage{graphicx}
 \graphicspath{ {./images/} }
@@ -261,12 +272,26 @@ All in all, I can truly say that my initial hypothesis of Haskell being a more "
 
 Another pain point I experienced was laziness. Laziness makes predicting what the runtime is going to do a lot more difficult and it really hurt me. In the back of my head, I still wonder if some of my benchmarks weren't working simply because of a failure to reduce a thunk or use a strict data type. Laziness does provide by benefits, like forcing the language to be pure and having the ability to produce streams of data easily, but for parallel programming lazy evaluation is definitely a pain.
 
-Last but not least, I failed on my part to find a strong machine to test my programs out on. I was unable to setup the Haskell environment on CORI so my laptop was the best option knowing what I knew at the time I started this project. If I could do it over again, I would use a machine on Digital Ocean or AWS to rule out any sort of issues that may have been caused by using a machine that is too weak.
+Last but not least, I failed on my part to find a strong machine to test my programs out on. I was unable to setup the Haskell environment on CORI, so my laptop was the best option knowing what I knew at the time I started this project. If I could do it over again, I would use a machine on Digital Ocean or AWS to rule out any sort of issues that may have been caused by using a machine that is too weak.
 
 The best things about the project were that I got to get more familiar with one of my favorite programming languages, and got to see parallel programming from another perspective that it isn't seen from often.
 So to answer to the question I initially had at the start of this journey, I would say that Haskell is most definitely not the best tool for parallel programming. I wasn't expecting it to be, but at the same time, I didn't expect the experience to be as bad as it was. At the end of the day, I must also consider my lack in skill and the fact that I wasn't able to devote 100\% of my focus to this project as I would've liked. I hope one day I can revisit this project and give it the conclusion it deserves.
 
 
 \section{Prior Work \& Resources}
+
+\begin{enumerate}
+	\item GitHub repo for the entire project: \url{}
+	\item Reference for GHC (Glasgow Haskell Compiler): \url{https://www.haskell.org/ghc/}
+	\item Book by Simon Marlow on Parallel and Concurrent Programming in Haskell: \url{https://www.oreilly.com/library/view/parallel-and-concurrent/9781449335939/}
+	\item Documentation for \lstinline{monad-par} library: \url{http://hackage.haskell.org/package/monad-par}
+	\item A blog post on using the \lstinline{monad-par} library: \url{http://tomasp.net/blog/speculative-par-monad.aspx/}
+	\item Documentation for \lstinline{repa} library: \url{https://hackage.haskell.org/package/repa-3.4.1.4/docs/Data-Array-Repa.html}
+	\item A tutorial for using \lstinline{repa}: \url{https://wiki.haskell.org/Numeric_Haskell:_A_Repa_Tutorial}
+	\item Documentation for \lstinline{accelerate} library: \url{https://hackage.haskell.org/package/accelerate-1.3.0.0/docs/Data-Array-Accelerate.html}
+	\item A compilation of examples of \lstinline{accelerate} in use: \url{https://github.com/AccelerateHS/accelerate-examples}
+	\item An academic paper on parallel evaluation strategies in Haskell: \url{http://simonmar.github.io/bib/papers/strategies.pdf}
+	\item Great resource for learning LaTeX: \url{https://www.overleaf.com/}
+\end{enumerate}
 
 \end{document}
